@@ -1,7 +1,8 @@
 42mouslim
 =========
 
-== INSTALL
+### INSTALL
+
 ```
 git clone git@github.com:illiatdesdindes/42mouslim.git
 cd 42mouslim
