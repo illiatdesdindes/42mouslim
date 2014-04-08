@@ -6,7 +6,7 @@
 #    By: svachere <svachere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/01/19 17:11:09 by svachere          #+#    #+#              #
-#    Updated: 2014/04/08 19:12:08 by svachere         ###   ########.fr        #
+#    Updated: 2014/04/08 19:31:02 by svachere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 LAST_VERSIO_URL = "https://raw.githubusercontent.com/illiatdesdindes/42mouslim/master/version"
 PRAYER_URL = "http://www.aboufatima.com/horaire-priere/fr/paris-18002.html"
+VERSION_FILE = File.expand_path('../version', __FILE__)
 
 class Fixnum
 	def minutes
@@ -39,7 +40,7 @@ class Version
     open(LAST_VERSIO_URL) do |f|
       f.each_line {|line| last_version += line }
     end
-    current_version = File.read('version')
+    current_version = File.read(VERSION_FILE)
     if last_version.strip != current_version.strip
       puts ANSI.red + 
           "\nThere is a new version of 42mouslim" + 
@@ -121,7 +122,7 @@ class Horraire
 
 end
 
-
+puts "\n\n\n"
 Version.check
 
 h = Horraire.new
