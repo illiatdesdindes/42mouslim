@@ -6,14 +6,16 @@
 #    By: svachere <svachere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/01/19 17:11:09 by svachere          #+#    #+#              #
-#    Updated: 2014/04/03 13:54:54 by svachere         ###   ########.fr        #
+#    Updated: 2014/04/08 19:12:08 by svachere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 require "open-uri"
 require "nokogiri"
 require "ansi/code"
-
+require "net/https"
+require "openssl"
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 # 			aboufatima time		42 time
 # soubh		06:29	
 # dohr		13:09				13:15
@@ -21,10 +23,33 @@ require "ansi/code"
 # Maghrib	18:31				18:25
 # Isha		20:01				19:45
 
+LAST_VERSIO_URL = "https://raw.githubusercontent.com/illiatdesdindes/42mouslim/master/version"
+PRAYER_URL = "http://www.aboufatima.com/horaire-priere/fr/paris-18002.html"
+
 class Fixnum
 	def minutes
 		self * 60
 	end
+end
+
+class Version
+
+  def self.check
+    last_version = ""
+    open(LAST_VERSIO_URL) do |f|
+      f.each_line {|line| last_version += line }
+    end
+    current_version = File.read('version')
+    if last_version.strip != current_version.strip
+      puts ANSI.red + 
+          "\nThere is a new version of 42mouslim" + 
+          "\nYou should :" + 
+          "\n - git pull the project" + 
+          "\n   or " +
+          "\n - git clone git@github.com:illiatdesdindes/42mouslim.git "+ 
+          ANSI.reset
+    end
+  end
 end
 
 class Horraire
@@ -32,7 +57,7 @@ class Horraire
 	attr_accessor :times
 
 	def initialize
-		doc = Nokogiri::HTML(open("http://www.aboufatima.com/horaire-priere/fr/paris-18002.html"))
+		doc = Nokogiri::HTML(open(PRAYER_URL))
 		tr = doc.css(".table_horaire_day tr")[1]
 		@times = {}
 		@times[:dohr] = Time.parse(tr.children[2].text) + 1.minutes
@@ -95,6 +120,9 @@ class Horraire
 	end
 
 end
+
+
+Version.check
 
 h = Horraire.new
 h.run
