@@ -6,16 +6,14 @@
 #    By: svachere <svachere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/01/19 17:11:09 by svachere          #+#    #+#              #
-#    Updated: 2014/04/08 19:31:02 by svachere         ###   ########.fr        #
+#    Updated: 2014/04/15 16:14:27 by svachere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 require "open-uri"
 require "nokogiri"
 require "ansi/code"
-require "net/https"
-require "openssl"
-OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
 # 			aboufatima time		42 time
 # soubh		06:29	
 # dohr		13:09				13:15
@@ -26,6 +24,7 @@ OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 LAST_VERSIO_URL = "https://raw.githubusercontent.com/illiatdesdindes/42mouslim/master/version"
 PRAYER_URL = "http://www.aboufatima.com/horaire-priere/fr/paris-18002.html"
 VERSION_FILE = File.expand_path('../version', __FILE__)
+LAST_VERSION_FILE = File.expand_path('../tmp', __FILE__)
 
 class Fixnum
 	def minutes
@@ -36,10 +35,8 @@ end
 class Version
 
   def self.check
-    last_version = ""
-    open(LAST_VERSIO_URL) do |f|
-      f.each_line {|line| last_version += line }
-    end
+    system("curl -s #{LAST_VERSIO_URL} > #{LAST_VERSION_FILE}")
+    last_version = File.read(LAST_VERSION_FILE)
     current_version = File.read(VERSION_FILE)
     if last_version.strip != current_version.strip
       puts ANSI.red + 
@@ -50,6 +47,7 @@ class Version
           "\n - git clone git@github.com:illiatdesdindes/42mouslim.git "+ 
           ANSI.reset
     end
+    system("rm #{LAST_VERSION_FILE}")
   end
 end
 
@@ -122,7 +120,6 @@ class Horraire
 
 end
 
-puts "\n\n\n"
 Version.check
 
 h = Horraire.new
