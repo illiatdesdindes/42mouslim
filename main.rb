@@ -6,7 +6,7 @@
 #    By: svachere <svachere@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/01/19 17:11:09 by svachere          #+#    #+#              #
-#    Updated: 2014/04/15 16:14:27 by svachere         ###   ########.fr        #
+#    Updated: 2014/05/03 15:52:35 by svachere         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,10 @@ require "ansi/code"
 
 # 			aboufatima time		42 time
 # soubh		06:29	
-# dohr		13:09				13:15
-# asr		15:53				15:50
-# Maghrib	18:31				18:25
-# Isha		20:01				19:45
+# dohr		13:09				14:00
+# asr		  15:53				17:35
+# Maghrib	18:31				21:10
+# Isha		20:01				22:15
 
 LAST_VERSIO_URL = "https://raw.githubusercontent.com/illiatdesdindes/42mouslim/master/version"
 PRAYER_URL = "http://www.aboufatima.com/horaire-priere/fr/paris-18002.html"
@@ -59,10 +59,10 @@ class Horraire
 		doc = Nokogiri::HTML(open(PRAYER_URL))
 		tr = doc.css(".table_horaire_day tr")[1]
 		@times = {}
-		@times[:dohr] = Time.parse(tr.children[2].text) + 1.minutes
-		@times[:asr] = Time.parse(tr.children[3].text) - 9.minutes
-		@times[:maghrib] = Time.parse(tr.children[4].text) - 3.minutes
-		@times[:isha] = Time.parse(tr.children[5].text) - 16.minutes
+		@times[:dohr] = Time.parse(tr.children[2].text) + 7.minutes
+		@times[:asr] = Time.parse(tr.children[3].text) - 11.minutes
+		@times[:maghrib] = Time.parse(tr.children[4].text) - 4.minutes
+		@times[:isha] = Time.parse(tr.children[5].text) - (44 - 15).minutes
 		@alarm = 13.minutes
 	end
 
