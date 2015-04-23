@@ -59,10 +59,10 @@ class Horraire
 		doc = Nokogiri::HTML(open(PRAYER_URL))
 		tr = doc.css(".table_horaire_day tr")[1]
 		@times = {}
-		@times[:dohr] = Time.parse(tr.children[2].text) + 7.minutes
-		@times[:asr] = Time.parse(tr.children[3].text) - 11.minutes
-		@times[:maghrib] = Time.parse(tr.children[4].text) - 4.minutes
-		@times[:isha] = Time.parse(tr.children[5].text) - (44 - 15).minutes
+		@times[:dohr] = Time.parse(tr.children[2].text) #+ 7.minutes
+		@times[:asr] = Time.parse(tr.children[3].text) #- 11.minutes
+		@times[:maghrib] = Time.parse(tr.children[4].text) #- 4.minutes
+		@times[:isha] = Time.parse(tr.children[5].text) #- (44 - 15).minutes
 		@alarm = 13.minutes
 	end
 
@@ -70,7 +70,7 @@ class Horraire
 		while true
 			now = Time.now
 			@times.each do |k, time|
-				if time - @alarm < now
+				if now < time and now > time - @alarm
 					alarm k, time
 				end
 			end
@@ -97,7 +97,12 @@ class Horraire
 		print ANSI.green + text + ANSI.reset
 	end
 
+  def notify(prayer)
+    system "notify-send \"it's #{prayer} time ! \""
+  end
+
 	def alarm(prayer, time)
+    notify(prayer)
 		stop = time
 		toggle = 0
 		while Time.now < stop
@@ -116,6 +121,7 @@ class Horraire
 			print text + ANSI.reset
 			sleep 0.1
 		end
+    notify( prayer)
 	end
 
 end
